@@ -1,0 +1,26 @@
+/** @type {import('tailwindcss').Config} */
+const colors = require("tailwindcss/colors");
+module.exports = {
+  content: ["*"],
+  theme: {
+    screens: {
+      sm: "500px",
+      md: "700px",
+      lg: "900px",
+      xl: "1100px",
+      "2xl": "1300px",
+      "3xl": "1500px",
+      "4xl": "1700px",
+      "5xl": "1900px",
+      "6xl": "2100px",
+    },
+    extend: {
+      gridTemplateColumns: {
+        "playlists-mobile": "repeat(auto-fill, minmax(208px, 1fr))",
+        "playlists-tablet": "repeat(auto-fill, minmax(266px, 1fr))",
+        "playlists-desktop": "repeat(auto-fill, minmax(180px, 1fr))",
+      },
+    },
+  },
+  plugins: [require("tailwind-scrollbar"), require("@tailwindcss/line-clamp")],
+};

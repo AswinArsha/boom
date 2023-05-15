@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sign up</title>
+    <link rel="stylesheet" href="output.css" />
+    <link
+      rel="shortcut icon"
+      href="/favicon_io/android-chrome-512x512.png"
+      type="image/x-icon"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  </head>
+
+  <body class="bg-gray-900 scrollbar-thumb-blue-500">
+    <script type="module">
+
+      // add new firebase api , databse name  here
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+
+      import {
+        getDatabase,
+        ref,
+        set,
+        child,
+        get,
+      } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAguK8F9MJMCfcQH2X79O4ZXX-untXv-DQ",
+        authDomain: "boom-af349.firebaseapp.com",
+        databaseURL: "https://boom-af349-default-rtdb.firebaseio.com",
+        projectId: "boom-af349",
+        storageBucket: "boom-af349.appspot.com",
+        messagingSenderId: "984761343556",
+        appId: "1:984761343556:web:d1788d8b9e40291bc56611",
+      };
+      // add new firebase code here
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase();
+
+      const name = document.getElementById("name");
+      const email = document.getElementById("email");
+      const username = document.getElementById("username");
+      const pass = document.getElementById("password");
+      const submit = document.getElementById("sub_btn");
+
+      function isEmptyOrSpaces(str) {
+        return str == null || str.match(/^ *$/) !== null;
+      }
+
+      function validation() {
+        let nameregex = /^[a-zA-Z\s]+$/;
+        let emailregex = /^[a-zA-Z0-9@.]+$/;
+        let userregex = /^[a-zA-Z0-9]{5,}$/;
+
+        if (
+          isEmptyOrSpaces(name.value) ||
+          isEmptyOrSpaces(email.value) ||
+          isEmptyOrSpaces(username.value) ||
+          isEmptyOrSpaces(pass.value)
+        ) {
+          alert("You cannot leave any field empty.");
+          return false;
+        }
+
+        if (!nameregex.test(name.value)) {
+          alert("Name should only contain alphabets.");
+          return false;
+        }
+
+        if (!emailregex.test(email.value)) {
+          alert("Enter a valid email.");
+          return false;
+        }
+
+        if (!userregex.test(username.value)) {
+          alert(
+            "- Username can only be alphanumeric.\n- Username must be at least 5 characters.\n- Username cannot contain spaces."
+          );
+          return false;
+        }
+
+        return true;
+      }
+
+      function RegisterUser() {
+        if (!validation()) {
+          return;
+        }
+
+        const dbRef = ref(db);
+
+        get(child(dbRef, "UsersList/" + username.value)).then((snapshot) => {
+          if (snapshot.exists()) {
+            alert("Account already exists.");
+          } else {
+            set(ref(db, "UsersList/" + username.value), {
+              fullname: name.value,
+              email: email.value,
+              username: username.value,
+              password: encPass(),
+            })
+              .then(() => {
+                alert("User added successfully.");
+                window.location.href = "sign_in.html";
+              })
+              .catch((error) => {
+                alert("Error: " + error);
+              });
+          }
+        });
+      }
+
+      function encPass() {
+        var pass12 = CryptoJS.AES.encrypt(pass.value, pass.value);
+        return pass12.toString();
+      }
+
+      submit.addEventListener("click", RegisterUser);
+    </script>
+    <div class="h1 max-w-2xl flex justify-center mt-16 mx-auto">
+      <div
+        class="bg-gray-800 shadow-md border border-gray-700 rounded-lg max-w-sm p-4 sm:p-6 lg:p-8"
+      >
+        <div class="px-6 py-8 rounded shadow-md text-white w-full">
+          <h1 class="mb-8 text-3xl font-semibold text-center">Sign up</h1>
+          <input
+            type="text"
+            class="block bg-gray-600 border-2 outline-none border-gray-400 w-full p-2 rounded mb-5"
+            id="name"
+            placeholder="Full Name"
+          />
+
+          <input
+            type="text"
+            class="lock bg-gray-600 border-2 outline-none border-gray-400 w-full p-2 rounded mb-5"
+            id="email"
+            placeholder="Email"
+          />
+
+          <input
+            type="text"
+            class="lock bg-gray-600 border-2 outline-none border-gray-400 w-full p-2 rounded mb-5"
+            id="username"
+            placeholder="Username"
+          />
+
+          <input
+            type="password"
+            class="lock bg-gray-600 border-2 outline-none border-gray-400 w-full p-2 rounded mb-5"
+            id="password"
+            placeholder="Password"
+          />
+
+          <button
+            type="submit"
+            id="sub_btn"
+            class="w-full text-center py-3 rounded bg-green-600 font-semibold text-white hover:bg-green-500 outline-none my-1"
+          >
+            Create Account
+          </button>
+
+          <div class="text-center text-sm text-gray-50 mt-4">
+            By signing up, you agree to the
+            <a
+              class="no-underline border-b border-blue-500 hover:text-blue-500"
+              href="#"
+            >
+              Terms of Service
+            </a>
+            and
+            <a
+              class="no-underline border-b border-blue-500 hover:text-blue-500"
+              href="#"
+            >
+              Privacy Policy
+            </a>
+          </div>
+        </div>
+
+        <div class="text-white ml-10 mt-6">
+          Already have an account?
+          <a
+            class="hover:underline border-blue-500 text-blue-500"
+            href="/sign_in.html"
+          >
+            Log in
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

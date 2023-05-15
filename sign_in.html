@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign in</title>
+    <link rel="stylesheet" href="output.css">
+    <link rel="shortcut icon" href="/favicon_io/android-chrome-512x512.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+</head>
+
+<body class="bg-gray-900 scrollbar-thumb-blue-500">
+    <script type="module">
+      // add new firebase api , databse name  here
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAguK8F9MJMCfcQH2X79O4ZXX-untXv-DQ",
+            authDomain: "boom-af349.firebaseapp.com",
+            databaseURL: "https://boom-af349-default-rtdb.firebaseio.com",
+            projectId: "boom-af349",
+            storageBucket: "boom-af349.appspot.com",
+            messagingSenderId: "984761343556",
+            appId: "1:984761343556:web:d1788d8b9e40291bc56611"
+        };
+
+        const app = initializeApp(firebaseConfig);
+      // add new firebase api , databse name  here
+        import { getDatabase, ref, set, child, get } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+        const db = getDatabase();
+
+        const username = document.getElementById('username');
+        const pass = document.getElementById('password');
+        const submit = document.getElementById('sub_btn');
+
+        function AuthenticateUser() {
+    const dbRef = ref(db);
+    get(child(dbRef, "UsersList/" + username.value)).then((snapshot) => {
+        if (snapshot.exists()) {
+            let dbpass = decPass(snapshot.val().password);
+            if (dbpass == pass.value) {
+                login(snapshot.val());
+            }
+            else {
+                alert("Invalid password");
+            }
+        }
+        else {
+            alert("Invalid username");
+        }
+    });
+}
+
+        
+        function decPass(dbpass) {
+            var pass12 = CryptoJS.AES.decrypt(dbpass, pass.value);
+            return pass12.toString(CryptoJS.enc.Utf8);
+        }
+
+        function login(user) {
+    let keepLoggedIn = document.getElementById('remember').checked;
+
+    if (!keepLoggedIn) {
+        sessionStorage.setItem('user', JSON.stringify(user));
+    } else {
+        localStorage.setItem('keepLoggedIn', 'yes');
+        localStorage.setItem('user', JSON.stringify(user));
+    }
+    window.location = "index.html";
+}
+pass.addEventListener('keydown', (event) => {
+  if (event.keyCode === 13) {
+    AuthenticateUser();
+  }
+});
+
+
+        submit.addEventListener('click', AuthenticateUser);
+    </script>
+    <div class="max-w-2xl flex justify-center mt-40
+     mx-auto">
+        <div class=" shadow-md border rounded-lg max-w-sm p-4 sm:p-6 lg:p-8 bg-gray-800 border-gray-700">
+            <form class="space-y-6" action="#">
+                <h3 class="text-xl font-medium text-gray-900 dark:text-white">Start lisening now</h3>
+                <div>
+                    <label for="email" class="text-sm font-medium block mb-2 text-gray-300">Your
+                        username</label>
+                    <input type="text" id="username"
+                        class="bg-gray-900 border-2 outline-none  border-gray-500 text-gray-100 sm:text-sm rounded-lg block w-full p-2.5  "
+                        placeholder="username" required="">
+                </div>
+                <div>
+                    <label for="password" class="text-sm font-medium block mb-2 text-gray-300">Your
+                        password</label>
+                    <input type="password" name="password" id="password" placeholder="••••••••"
+                        class="bg-gray-900 border-2 outline-none  border-gray-500 text-gray-100 sm:text-sm rounded-lg block w-full p-2.5 "
+                        required="">
+                </div>
+                <div class="flex items-start">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="remember" aria-describedby="remember" type="checkbox"
+                                class="bg-gray-50 border border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                                required=""  checked>
+                        </div>
+                        <div class="text-sm ml-1">
+                            <label for="remember" class="font-medium text-gray-900 dark:text-gray-300 mr-24">Remember
+                                me</label>
+                        </div>
+                    </div >
+                    <a href=" #" class="text-sm  text-blue-700 hover:underline ml-auto dark:text-blue-500">forgot
+                    Password?</a>
+                </div>
+
+                <button type="button" id="sub_btn"
+                    class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login
+                    to your account</button>
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                    Not registered? <a href="/sign_up.html"
+                        class="text-blue-700 hover:underline dark:text-blue-500">Create
+                        account</a>
+                </div>
+            </form>
+        </div>
+
+
+
+    </div>
+
+</body>
+
+</html>
