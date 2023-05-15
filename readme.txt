@@ -1,1 +1,1 @@
-initilaze node mmodules for tailwind css and firebase
+initilaze node modules for tailwind css and firebase
